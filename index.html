@@ -18,46 +18,69 @@ body {
 
 #container {
   text-align: center;
-  max-width: 90%;
 }
 
 h1 {
-  font-weight: 600;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 #subtitle {
   color: #9aa;
   margin-bottom: 1.5rem;
-  font-size: 1rem;
 }
 
 #countdown {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   letter-spacing: 1px;
 }
 
-.rush {
-  animation: rush 0.25s infinite alternate;
+.fade {
+  animation: fade 0.15s linear;
 }
 
-@keyframes rush {
-  from { opacity: 0.4; }
+@keyframes fade {
+  from { opacity: 0.3; }
   to   { opacity: 1; }
 }
 </style>
 </head>
 <body>
+
 <div id="container">
-  <h1>AI for All — 2026</h1>
+  <h1 id="title">AI 2026</h1>
   <div id="subtitle"></div>
   <div id="countdown"></div>
 </div>
 
 <script>
-/* Fixed UTC anchors */
-const JAN_1_2026 = Date.parse("2026-01-01T00:00:00Z");
-const END_2026  = Date.parse("2026-12-31T23:59:59Z");
+const END_2026 = Date.parse("2026-12-31T23:59:59Z");
+
+const title = document.getElementById("title");
+const subtitle = document.getElementById("subtitle");
+const countdown = document.getElementById("countdown");
+
+/* -------- ENTRY ANIMATION (ALWAYS PLAYS) -------- */
+
+let anim = 10;
+
+subtitle.textContent =
+  "As we approached the end of the countdown to 1 January 2026…";
+
+function playEntryAnimation() {
+  if (anim >= 0) {
+    countdown.textContent = anim;
+    countdown.classList.add("fade");
+    setTimeout(() => countdown.classList.remove("fade"), 80);
+    anim--;
+    setTimeout(playEntryAnimation, 120);
+  } else {
+    startRealCountdown();
+  }
+}
+
+playEntryAnimation();
+
+/* -------- REAL COUNTDOWN -------- */
 
 function format(ms) {
   if (ms < 0) ms = 0;
@@ -68,28 +91,20 @@ function format(ms) {
   return `${d}d ${h}h ${m}m ${s}s`;
 }
 
-function tick() {
-  const now = Date.now();
-  const subtitle = document.getElementById("subtitle");
-  const countdown = document.getElementById("countdown");
-
-  // Static narrative — NEVER a countdown
+function startRealCountdown() {
+  title.textContent = "AI for All — 2026";
   subtitle.textContent =
-    "As we approached the end of the countdown to 1 January 2026, another countdown had already begun — AI for All by 31 December 2026.";
+    "The year has begun. The countdown continues.";
 
-  // Rush effect ONLY after Jan 1, 2026
-  if (now >= JAN_1_2026 && now - JAN_1_2026 < 24 * 60 * 60 * 1000) {
-    countdown.classList.add("rush");
-  } else {
-    countdown.classList.remove("rush");
+  function tick() {
+    const now = Date.now();
+    countdown.textContent = format(END_2026 - now);
   }
 
-  // The ONLY countdown that exists
-  countdown.textContent = format(END_2026 - now);
+  tick();
+  setInterval(tick, 1000);
 }
-
-setInterval(tick, 1000);
-tick();
 </script>
+
 </body>
 </html>
