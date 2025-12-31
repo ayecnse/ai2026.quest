@@ -8,7 +8,7 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-  background: #001a12;
+  background: #000000;
   color: #e0e0e0;
   display: flex;
   justify-content: center;
@@ -38,31 +38,32 @@ h1 {
 }
 
 .rush {
-  animation: rush 0.2s infinite alternate;
+  animation: rush 0.25s infinite alternate;
 }
 
 @keyframes rush {
-  from { opacity: 0.5; }
+  from { opacity: 0.4; }
   to   { opacity: 1; }
 }
 </style>
 </head>
 <body>
 <div id="container">
-  <h1 id="title">AI for All — 2026</h1>
+  <h1>AI for All — 2026</h1>
   <div id="subtitle"></div>
   <div id="countdown"></div>
 </div>
 
 <script>
-const START_2026 = new Date("2026-01-01T00:00:00Z").getTime();
-const END_2026   = new Date("2026-12-31T23:59:59Z").getTime();
+/* Fixed UTC anchors */
+const JAN_1_2026 = Date.parse("2026-01-01T00:00:00Z");
+const END_2026  = Date.parse("2026-12-31T23:59:59Z");
 
 function format(ms) {
   if (ms < 0) ms = 0;
-  const d = Math.floor(ms / (1000 * 60 * 60 * 24));
-  const h = Math.floor((ms / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((ms / (1000 * 60)) % 60);
+  const d = Math.floor(ms / (1000*60*60*24));
+  const h = Math.floor((ms / (1000*60*60)) % 24);
+  const m = Math.floor((ms / (1000*60)) % 60);
   const s = Math.floor((ms / 1000) % 60);
   return `${d}d ${h}h ${m}m ${s}s`;
 }
@@ -72,22 +73,18 @@ function tick() {
   const subtitle = document.getElementById("subtitle");
   const countdown = document.getElementById("countdown");
 
-  // Narrative (static, not a countdown)
-  if (now < START_2026) {
-    subtitle.textContent =
-      "As we approached the end of the countdown to 1 January 2026, another countdown had already begun.";
-    countdown.classList.remove("rush");
+  // Static narrative — NEVER a countdown
+  subtitle.textContent =
+    "As we approached the end of the countdown to 1 January 2026, another countdown had already begun — AI for All by 31 December 2026.";
+
+  // Rush effect ONLY after Jan 1, 2026
+  if (now >= JAN_1_2026 && now - JAN_1_2026 < 24 * 60 * 60 * 1000) {
+    countdown.classList.add("rush");
   } else {
-    subtitle.textContent =
-      "The year has begun. The countdown continues.";
-    if (now - START_2026 < 60 * 1000) {
-      countdown.classList.add("rush");
-    } else {
-      countdown.classList.remove("rush");
-    }
+    countdown.classList.remove("rush");
   }
 
-  // The ONLY countdown that ever exists
+  // The ONLY countdown that exists
   countdown.textContent = format(END_2026 - now);
 }
 
