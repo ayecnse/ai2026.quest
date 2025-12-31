@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI 2026</title>
+<style>
+body {
+  margin:0;
+  font-family: system-ui, sans-serif;
+  background:#0b0b0b;
+  color:#e0e0e0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  transition:background 2s;
+}
+#box {
+  text-align:center;
+  animation: fadein 2s;
+}
+@keyframes fadein {
+  from { opacity:0; transform:scale(0.95); }
+  to   { opacity:1; transform:scale(1); }
+}
+</style>
+</head>
+<body>
+<div id="box"></div>
+<script>
+const start2026 = new Date("2026-01-01T00:00:00Z").getTime();
+const end2026   = new Date("2026-12-31T23:59:59Z").getTime();
+
+function renderCountdown(target, label){
+  const now = Date.now();
+  let d = target - now;
+  if(d < 0) d = 0;
+  const days = Math.floor(d / (1000*60*60*24));
+  const hrs  = Math.floor((d/(1000*60*60))%24);
+  const mins = Math.floor((d/(1000*60))%60);
+  const secs = Math.floor((d/1000)%60);
+  document.getElementById("box").innerHTML =
+    `<h1>${label}</h1>
+     <div>${days}d ${hrs}h ${mins}m ${secs}s</div>`;
+}
+
+function tick(){
+  const now = Date.now();
+  if(now < start2026){
+    renderCountdown(start2026, "AI 2026 begins");
+  } else {
+    document.body.style.background = "#001a12";
+    renderCountdown(end2026, "AI for All — 2026");
+  }
+}
+setInterval(tick,1000); tick();
+</script>
+</body>
+</html>
